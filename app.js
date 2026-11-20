@@ -142,7 +142,7 @@
       lines.push("", "Please confirm availability, service duration and pricing. I understand this is a request only and is not confirmed until the studio replies.", "Thank you.");
 
       const url = "https://wa.me/" + WA_NUMBER + "?text=" + encodeURIComponent(lines.join("\n"));
-      const opened = window.open(url, "_blank", "noopener,noreferrer");
+      const opened = window.open(url, "_blank");
       if (!opened) {
         error.textContent = "Your browser blocked WhatsApp. Open the direct booking link below or allow pop-ups.";
         const fallback = document.createElement("a");
@@ -154,6 +154,8 @@
         error.append(" ", fallback);
         return;
       }
+      // Detach the new tab from this page after it has opened.
+      try { opened.opener = null; } catch (_) {}
       // The page only reports that WhatsApp was opened, never that the appointment is confirmed.
       const note = $(".request-note span", form);
       if (note) note.textContent = "Your request is open in WhatsApp. Please press Send there. The studio will confirm availability and pricing in its reply.";
